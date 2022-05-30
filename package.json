@@ -29,7 +29,11 @@
   "homepage": "https://github.com/dyte-submissions/dyte-vit-2022-devashar13#readme",
   "dependencies": {
     "arg": "^5.0.1",
+    "chalk": "^5.0.1",
+    "configstore": "^6.0.0",
+    "csv": "^6.1.0",
     "esm": "^3.2.25",
-    "inquirer": "^8.2.4"
+    "inquirer": "^8.2.4",
+    "ncp": "^2.0.0"
   }
 }

@@ -1,5 +1,6 @@
 import arg from "arg";
 import inquirer from "inquirer";
+import { parseCSV } from "./main";
 function parseArgumentsIntoOptions(rawArgs) {
   const args = arg(
     {
@@ -60,8 +61,10 @@ function parseArgumentsIntoOptions(rawArgs) {
 //   };
 // };
 
-export function cli(args) {
+export async function cli(args) {
   let options = parseArgumentsIntoOptions(args);
-//   options = await prompForMissingOptions(options);
+  //   options = await prompForMissingOptions(options);
   console.log(options);
+
+  await parseCSV(options);
 }
