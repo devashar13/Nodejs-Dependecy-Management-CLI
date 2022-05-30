@@ -6,6 +6,7 @@ const Spinner = CLI.Spinner;
 import { createBasicAuth } from "@octokit/auth-basic";
 import inquirer from "inquirer";
 import helper from "./helpers";
+import { parse } from "path";
 const pkg = require("../../package.json");
 const conf = new Configstore(pkg.name);
 let auth;
@@ -62,27 +63,44 @@ export default {
   getContents: async (token, options) => {
     auth = new Octokit({ auth: token });
     const csvContents = await helper.parseCSV(options);
-    console.log(csvContents);
     for (let i = 0; i < csvContents.length; i++) {
       if (csvContents[i].name == "") {
         continue;
       }
       const repoUser = csvContents[i].repo
         .replace("https://github.com/", "")
-        .split("/")[0];
-      console.log(repoUser);
+        .split("/");
       const contents = await auth.request(
-        `GET /repos/${repoUser}/${csvContents[i].name}/contents/package.json`,
+        `GET /repos/${repoUser[0]}/${repoUser[1]}/contents/package.json`,
         {
-          owner: repoUser,
-          repo: csvContents[i].name,
+          owner: repoUser[0],
+          repo: repoUser[1],
           path: "package.json",
         }
       );
       // console.log(contents);
       const x = await axios.get(contents.data.download_url).then((response) => {
-        // check if axios is in dependency in package.json
+        const data = response.data;
+        const lib = options.library.split("@");
+        let verBool;
+        if (data.dependencies[lib[0]]) {
+          if (
+            parseFloat(lib[1]) <=
+            parseFloat(data.dependencies[lib[0]].replace("^", ""))
+          ) {
+            libversions[repoUser[1]] = [
+              data.dependencies[lib[0]],
+              "yes",
+            ];
+          }else{
+            libversions[repoUser[1]] = [
+              data.dependencies[lib[0]],
+              "no",
+            ];
+          }
+        }
       });
     }
+    console.log(libversions);
   },
 };
