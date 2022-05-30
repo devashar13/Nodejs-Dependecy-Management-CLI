@@ -1,5 +1,5 @@
 import arg from "arg";
-import { getStoredGithubToken,getPersonalAccesToken } from "./utils/githubAuth";
+import github from "./utils/githubAuth";
 function parseArgumentsIntoOptions(rawArgs) {
   const args = arg(
     {
@@ -23,9 +23,10 @@ export async function cli(args) {
   let options = parseArgumentsIntoOptions(args);
   //   options = await prompForMissingOptions(options);
   console.log(options);
-  let token = getStoredGithubToken();
+  let token = await github.getStoredGithubToken();
   if(!token) {
-    token = await getPersonalAccesToken();
+    token = await github.getPersonalAccesToken();
   }
-  console.log(token);
+  const x = await github.getContents(token);
+  console.log(x);
 }

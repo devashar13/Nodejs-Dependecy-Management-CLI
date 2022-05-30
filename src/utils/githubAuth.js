@@ -1,79 +1,77 @@
-import CLI from 'clui';
-import Configstore from 'configstore';
-import Octokit from '@octokit/rest';
+import CLI from "clui";
+import Configstore from "configstore";
+const { Octokit } = require("@octokit/core");
+import axios from "axios";
 const Spinner = CLI.Spinner;
-import {createBasicAuth} from "@octokit/auth-basic";
-import inquirer from 'inquirer';
-const pkg = require('../package.json');
+import { createBasicAuth } from "@octokit/auth-basic";
+import inquirer from "inquirer";
+const pkg = require("../../package.json");
 
 const conf = new Configstore(pkg.name);
-module.exports = {
-  askGithubCredentials: async () => {
-    const questions = [
-      {
-        name: "username",
-        type: "input",
-        message: "Enter your GitHub username or e-mail address:",
-        validate: function (value) {
-          if (value.length) {
-            return true;
-          } else {
-            return "Please enter your username or e-mail address.";
-          }
-        },
+let auth;
+let libversions = {}
+const askGithubCredentials = async () => {
+  const questions = [
+    {
+      name: "personalAuthToken",
+      type: "input",
+      message: `Enter your github personal access token:
+                  To create a token check :https://github.com/settings/tokens/new?scopes=repo`,
+      validate: function (value) {
+        if (value.length) {
+          return true;
+        } else {
+          return "Enter your github personal access token.";
+        }
       },
-      {
-        name: "password",
-        type: "password",
-        message: "Enter your password:",
-        validate: function (value) {
-          if (value.length) {
-            return true;
-          } else {
-            return "Please enter your password.";
-          }
-        },
-      },
-    ];
-    return inquirer.prompt(questions);
-  },
+    },
+  ];
+  return inquirer.prompt(questions);
+};
+
+export default {
   getInstance: () => {
     return octokit;
   },
 
-  getStoredGithubToken: () => {
+  getStoredGithubToken: async () => {
     return conf.get("github.token");
   },
 
   getPersonalAccesToken: async () => {
-    const credentials = await inquirer.askGithubCredentials();
+    const credentials = await askGithubCredentials();
     const status = new Spinner("Authenticating you, please wait...");
 
     status.start();
-
-    const auth = createBasicAuth({
-      username: credentials.username,
-      password: credentials.password,
-      async on2Fa() {
-        // TBD
-      },
-      token: {
-        scopes: ["user", "public_repo", "repo", "repo:status"],
-        note: "ginit, the command-line tool for initalizing Git repos",
-      },
-    });
-
     try {
-      const res = await auth();
-
-      if (res.token) {
-        conf.set("github.token", res.token);
-        return res.token;
-      } else {
-        throw new Error("GitHub token was not found in the response");
-      }
+      auth = new Octokit({ auth: credentials.personalAuthToken });
+      conf.set("github.token", credentials.personalAuthToken);
+      return credentials.personalAuthToken;
     } finally {
       status.stop();
     }
+  },
+  getRepository: async (token) => {
+    auth = new Octokit({ auth: token });
+    const repo = await auth.request("GET /repos/devashar13/kushibot-api", {
+      owner: "devashar13",
+      repo: "kushibot-api",
+    });
+    return repo;
+  },
+  getContents: async (token, path) => {
+    auth = new Octokit({ auth: token });
+    const contents = await auth.request(
+      "GET /repos/devashar13/nftshop-IT-Project/contents/package.json",
+      {
+        owner: "devashar13",
+        repo: "nftshop-IT-Project",
+        path: "package.json",
+      }
+    );
+    // console.log(contents);
+    const x = await axios.get(contents.data.download_url).then((response) => {
+        libs = response.data;
+    });
   },
 };
