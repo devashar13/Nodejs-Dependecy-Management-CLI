@@ -8,5 +8,6 @@ module.exports = {
 
   directoryExists: (filePath) => {
     return fs.existsSync(filePath);
-  }
+  },
+  
 };

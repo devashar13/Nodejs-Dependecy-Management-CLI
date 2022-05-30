@@ -30,6 +30,7 @@
   "dependencies": {
     "arg": "^5.0.1",
     "chalk": "^5.0.1",
+    "clui": "^0.3.6",
     "configstore": "^6.0.0",
     "csv": "^6.1.0",
     "esm": "^3.2.25",
