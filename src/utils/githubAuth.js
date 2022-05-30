@@ -5,11 +5,11 @@ import axios from "axios";
 const Spinner = CLI.Spinner;
 import { createBasicAuth } from "@octokit/auth-basic";
 import inquirer from "inquirer";
+import helper from "./helpers";
 const pkg = require("../../package.json");
-
 const conf = new Configstore(pkg.name);
 let auth;
-let libversions = {}
+let libversions = {};
 const askGithubCredentials = async () => {
   const questions = [
     {
@@ -59,19 +59,30 @@ export default {
     });
     return repo;
   },
-  getContents: async (token, path) => {
+  getContents: async (token, options) => {
     auth = new Octokit({ auth: token });
-    const contents = await auth.request(
-      "GET /repos/devashar13/nftshop-IT-Project/contents/package.json",
-      {
-        owner: "devashar13",
-        repo: "nftshop-IT-Project",
-        path: "package.json",
+    const csvContents = await helper.parseCSV(options);
+    console.log(csvContents);
+    for (let i = 0; i < csvContents.length; i++) {
+      if (csvContents[i].name == "") {
+        continue;
       }
-    );
-    // console.log(contents);
-    const x = await axios.get(contents.data.download_url).then((response) => {
-        libs = response.data;
-    });
+      const repoUser = csvContents[i].repo
+        .replace("https://github.com/", "")
+        .split("/")[0];
+      console.log(repoUser);
+      const contents = await auth.request(
+        `GET /repos/${repoUser}/${csvContents[i].name}/contents/package.json`,
+        {
+          owner: repoUser,
+          repo: csvContents[i].name,
+          path: "package.json",
+        }
+      );
+      // console.log(contents);
+      const x = await axios.get(contents.data.download_url).then((response) => {
+        // check if axios is in dependency in package.json
+      });
+    }
   },
 };

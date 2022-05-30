@@ -22,11 +22,10 @@ function parseArgumentsIntoOptions(rawArgs) {
 export async function cli(args) {
   let options = parseArgumentsIntoOptions(args);
   //   options = await prompForMissingOptions(options);
-  console.log(options);
   let token = await github.getStoredGithubToken();
   if(!token) {
     token = await github.getPersonalAccesToken();
   }
-  const x = await github.getContents(token);
-  console.log(x);
+  const getDepends = await github.getContents(token,options);
+
 }
