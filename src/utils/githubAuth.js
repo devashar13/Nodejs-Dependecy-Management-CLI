@@ -17,7 +17,7 @@ const askGithubCredentials = async () => {
       name: "personalAuthToken",
       type: "input",
       message: `Enter your github personal access token:
-                  To create a token check :https://github.com/settings/tokens/new?scopes=repo`,
+To create a token check :https://github.com/settings/tokens/new?scopes=repo`,
       validate: function (value) {
         if (value.length) {
           return true;
@@ -52,14 +52,14 @@ export default {
       status.stop();
     }
   },
-  getRepository: async (token) => {
-    auth = new Octokit({ auth: token });
-    const repo = await auth.request("GET /repos/devashar13/kushibot-api", {
-      owner: "devashar13",
-      repo: "kushibot-api",
-    });
-    return repo;
-  },
+  // getRepository: async (token) => {
+  //   auth = new Octokit({ auth: token });
+  //   const repo = await auth.request("GET /repos/devashar13/kushibot-api", {
+  //     owner: "devashar13",
+  //     repo: "kushibot-api",
+  //   });
+  //   return repo;
+  // },
   getContents: async (token, options) => {
     auth = new Octokit({ auth: token });
     const csvContents = await helper.parseCSV(options);
@@ -67,6 +67,7 @@ export default {
       if (csvContents[i].name == "") {
         continue;
       }
+      console.log(csvContents[i].name);
       const repoUser = csvContents[i].repo
         .replace("https://github.com/", "")
         .split("/");
@@ -88,12 +89,14 @@ export default {
             parseFloat(lib[1]) <=
             parseFloat(data.dependencies[lib[0]].replace("^", ""))
           ) {
-            libversions[repoUser[1]] = [
+            libversions[csvContents[i].name] = [
+              csvContents[i].repo,
               data.dependencies[lib[0]],
               "yes",
             ];
-          }else{
-            libversions[repoUser[1]] = [
+          } else {
+            libversions[csvContents[i].name] = [
+              csvContents[i].repo,
               data.dependencies[lib[0]],
               "no",
             ];
@@ -101,6 +104,6 @@ export default {
         }
       });
     }
-    console.log(libversions);
+    return libversions;
   },
 };

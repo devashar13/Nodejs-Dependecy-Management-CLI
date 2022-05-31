@@ -2,6 +2,7 @@ import fs from "fs";
 import ncp from "ncp";
 import path from "path";
 import { promisify } from "util";
+var Table = require('cli-table');
 
 const access = promisify(fs.access);
 const copy = promisify(ncp);
@@ -31,6 +32,23 @@ export default {
     });
     return data;
   
+},
+createTable:(repoStats) => {
+  const stats = []
+  const x = Object.keys(repoStats)
+  for (let i = 0; i < x.length; i++) {
+    stats.push([x[i],...repoStats[x[i]]])
+  }
+  console.log(stats)
+   const table = new Table({
+     head: ['name','repo',"version","version_satisfied"],
+     colWidths: [300, 20, 10,30]
+   });
+   stats.forEach((repo) => {
+      table.push(repo)
+   });
+
+   console.log(table.toString());
 }
 };
 
