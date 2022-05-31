@@ -1,11 +1,11 @@
 {
-  "name": "@devashar/dyte-src-mgmt",
+  "name": "@devashar/biryani",
   "version": "1.0.0",
   "description": "[![Open in Visual Studio Code](https://classroom.github.com/assets/open-in-vscode-c66648af7eb3fe8bc4f294546bfd86ef473780cde1dea487d3c4ff354943c9ae.svg)](https://classroom.github.com/online_ide?assignment_repo_id=7943761&assignment_repo_type=AssignmentRepo) <div id=\"top\"></div> <!-- *** Thanks for checking out the Best-README-Template. If you have a suggestion *** that would make this better, please fork the repo and create a pull request *** or simply open an issue with the tag \"enhancement\". *** Don't forget to give the project a star! *** Thanks again! Now go create something AMAZING! :D -->",
   "main": "src/index.js",
   "bin": {
-    "@devashar/dyte-src-mgmt": "bin/dyte-src-mgmt",
-    "dyte-src-mgmt": "bin/dyte-src-mgmt"
+    "@devashar/biryani": "bin/biryani",
+    "biryani": "bin/biryani"
   },
   "publishConfig": {
     "access": "public"
@@ -19,7 +19,7 @@
   },
   "keywords": [
     "cli",
-    "dyte-src-mgmt"
+    "biryani"
   ],
   "author": "",
   "license": "ISC",
@@ -33,7 +33,7 @@
     "@octokit/rest": "^18.12.0",
     "arg": "^5.0.1",
     "axios": "^0.27.2",
-    "chalk": "^5.0.1",
+    "chalk": "^5.0.0",
     "clear": "^0.1.0",
     "cli-table": "^0.3.11",
     "clui": "^0.3.6",

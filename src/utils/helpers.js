@@ -64,7 +64,7 @@ export default {
         stats[i].push("");
       }
     }
-    console.log(stats);
+
     const table = new Table({
       head: ["name", "repo", "version", "version_satisfied", "pr_link"],
       colWidths: [50, 70, 10, 10, 70],

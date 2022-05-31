@@ -2,6 +2,8 @@ import arg from "arg";
 import github from "./utils/githubAuth";
 import helper from "./utils/helpers";
 import githubActions from "./github";
+import chalk from "chalk";
+import figlet from "figlet";
 function parseArgumentsIntoOptions(rawArgs) {
   const args = arg(
     {
@@ -25,7 +27,15 @@ function parseArgumentsIntoOptions(rawArgs) {
 
 export async function cli(args) {
   let options = parseArgumentsIntoOptions(args);
+  console.log(
+    chalk.yellow(figlet.textSync("Biryani", { horizontalLayout: "full" }))
+  );
   //   options = await prompForMissingOptions(options);
+
+  // if no argument is given
+  if (!options.library && !options.update && !options.fileInput) {
+    return;
+  }
   let token = await github.getStoredGithubToken();
   if (!token) {
     token = await github.getPersonalAccesToken();
@@ -47,6 +57,6 @@ export async function cli(args) {
   if (options.update) {
     await helper.createTable(libversions);
     const makePR = await githubActions.makePR(token, options);
-    await helper.createUpdateTable(libversions,makePR);
+    await helper.createUpdateTable(libversions, makePR);
   }
 }
