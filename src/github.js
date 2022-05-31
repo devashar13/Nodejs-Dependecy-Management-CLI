@@ -4,7 +4,7 @@ import githubAuth from "./utils/githubAuth";
 import { fs, vol } from "memfs";
 var filesys = require("fs");
 
-const links = []    
+const links = []     
 const makeLibsArray = (libs) => {
   const stats = [];
   const x = Object.keys(libs);
@@ -109,11 +109,12 @@ const createBranch = async (token, options, user, csvContents) => {
       //   get update sha
       const updateSha = update.data.content.sha;
       console.log("Changes Created🎉");
-      createPullRequest(token, options, repoUser, updateSha, stats[i][2]);
+      await createPullRequest(token, options, repoUser, updateSha, stats[i][2]);
     } else {
       continue;
     }
   }
+  return;
 };
 export default {
   makePR: async (token, options) => {
@@ -123,7 +124,8 @@ export default {
     });
     const user = await octokit.rest.users.getAuthenticated();
     const userName = user.data.login;
-    await createBranch(token, options, user, csvContents);
+    await createBranch(token, options, user, csvContents)
+    return links;
 
     // for (let i = 0; i < csvContents.length; i++) {
     //   if (csvContents[i].name == "") {

@@ -46,6 +46,7 @@ export async function cli(args) {
   }
   if (options.update) {
     await helper.createTable(libversions);
-    const makePR = await githubActions.makePR(token, options);  
+    const makePR = await githubActions.makePR(token, options);
+    await helper.createUpdateTable(libversions,makePR);
   }
 }
