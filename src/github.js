@@ -3,8 +3,10 @@ import helpers from "./utils/helpers";
 import githubAuth from "./utils/githubAuth";
 import { fs, vol } from "memfs";
 var filesys = require("fs");
+import inquirer from "inquirer";
 
-const links = []     
+const links = [];
+let useEmail = "";
 const makeLibsArray = (libs) => {
   const stats = [];
   const x = Object.keys(libs);
@@ -21,7 +23,6 @@ const createPullRequest = async (
   updateSha,
   version
 ) => {
-
   const octokit = new Octokit({
     auth: token,
   });
@@ -45,7 +46,7 @@ const createPullRequest = async (
       .replace("/repos", "")
       .replace("pulls", "pull")
   );
-  
+
   // create table with updated version and url
 };
 
@@ -92,7 +93,28 @@ const createBranch = async (token, options, user, csvContents) => {
 
       let objJsonStr = JSON.stringify(data);
       let objJsonB64 = Buffer.from(objJsonStr).toString("base64");
+      const email = await octokit.rest.users.listEmailsForAuthenticatedUser();
 
+      if (useEmail === "") {
+        const askList = [];
+        if (email.data.length > 1) {
+          for (let i = 0; i < email.data.length; i++) {
+            askList.push(email.data[i].email);
+          }
+          useEmail = await inquirer.prompt([
+            {
+              name: "email",
+              type: "list",
+              message: "Use the email you want to use to commit the changes",
+              choices: askList,
+            },
+          ]);
+          useEmail = useEmail.email;
+        }else{
+            useEmail = email.data[0].email;
+        }
+      }
+      console.log(useEmail);
       const update = await octokit.rest.repos.createOrUpdateFileContents({
         owner: repoUser[0],
         repo: repoUser[1],
@@ -102,8 +124,9 @@ const createBranch = async (token, options, user, csvContents) => {
         sha: sha,
         committer: {
           name: user.data.login,
-          email: "dev.ashar2019@vitstudent.ac.in",
+          email: useEmail,
         },
+
         content: objJsonB64,
       });
       //   get update sha
@@ -124,7 +147,7 @@ export default {
     });
     const user = await octokit.rest.users.getAuthenticated();
     const userName = user.data.login;
-    await createBranch(token, options, user, csvContents)
+    await createBranch(token, options, user, csvContents);
     return links;
 
     // for (let i = 0; i < csvContents.length; i++) {
