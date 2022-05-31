@@ -3,6 +3,7 @@ import github from "./utils/githubAuth";
 import helper from "./utils/helpers";
 import githubActions from "./github";
 import chalk from "chalk";
+import boxen from 'boxen';
 import figlet from "figlet";
 function parseArgumentsIntoOptions(rawArgs) {
   const args = arg(
@@ -22,6 +23,7 @@ function parseArgumentsIntoOptions(rawArgs) {
     fileInput: args["--input"] || "",
     library: args._[0],
     update: args["-u"] || false,
+    help: args["--help"] || false,
   };
 }
 
@@ -33,6 +35,19 @@ export async function cli(args) {
   //   options = await prompForMissingOptions(options);
 
   // if no argument is given
+  if(options.help){
+    
+    console.log(`
+    Usage:
+      $ biryani [options] <library>
+    Options:
+      -i, --input   List current version and check if it satisfies the given version
+      -u, --update  Update the library version
+      -h, --help    Show help
+    `);
+    return;
+  }
+
   if (!options.library && !options.update && !options.fileInput) {
     return;
   }
