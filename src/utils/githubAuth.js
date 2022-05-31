@@ -61,6 +61,7 @@ export default {
   //   return repo;
   // },
   getContents: async (token, options) => {
+    const pkg = []
     auth = new Octokit({ auth: token });
     const csvContents = await helper.parseCSV(options);
     for (let i = 0; i < csvContents.length; i++) {
@@ -79,11 +80,13 @@ export default {
           path: "package.json",
         }
       );
+
       // console.log(contents);
       const x = await axios.get(contents.data.download_url).then((response) => {
         const data = response.data;
+        data.sha = contents.data.sha;
+        pkg.push(data);
         const lib = options.library.split("@");
-        let verBool;
         if (data.dependencies[lib[0]]) {
           if (
             parseFloat(lib[1]) <=
@@ -104,6 +107,34 @@ export default {
         }
       });
     }
-    return libversions;
+    return { libversions, pkg };
+  },
+  getPackage: async (token, options) => {
+    auth = new Octokit({ auth: token });
+    const pkg = [];
+    const csvContents = await helper.parseCSV(options);
+    for (let i = 0; i < csvContents.length; i++) {
+      if (csvContents[i].name == "") {
+        continue;
+      }
+      console.log(csvContents[i].name);
+      const repoUser = csvContents[i].repo
+        .replace("https://github.com/", "")
+        .split("/");
+      const contents = await auth.request(
+        `GET /repos/${repoUser[0]}/${repoUser[1]}/contents/package.json`,
+        {
+          owner: repoUser[0],
+          repo: repoUser[1],
+          path: "package.json",
+        }
+      );
+      // console.log(contents);
+      const x = await axios.get(contents.data.download_url).then((response) => {
+        data = response.data;
+        pkg.push(data);
+      });
+    }
+    return pkg ;
   },
 };

@@ -1,5 +1,50 @@
 const { Octokit } = require("@octokit/rest");
 import helpers from "./utils/helpers";
+import githubAuth from "./utils/githubAuth";
+import { fs, vol } from "memfs";
+var filesys = require("fs");
+
+const makeLibsArray = (libs) => {
+  const stats = [];
+  const x = Object.keys(libs);
+  for (let i = 0; i < x.length; i++) {
+    stats.push([x[i], ...libs[x[i]]]);
+  }
+  return stats;
+};
+
+const createBranch = async (token, options, repoUser) => {
+  // create a branch
+  // commit change in package.json
+  const octokit = new Octokit({
+    auth: token,
+  });
+  const { libversions, pkg } = await githubAuth.getContents(token, options);
+  const stats = makeLibsArray(libversions);
+  const lib = options.library.split("@");
+
+  for (let i = 0; i < stats.length; i++) {
+    if (stats[i][3] == "no") {
+      let objJsonStr = JSON.stringify(pkg[i]);
+      console.log(objJsonStr);
+      let objJsonB64 = Buffer.from(objJsonStr).toString("base64");
+      console.log(pkg[i].sha);
+      const update = await octokit.rest.repos.createOrUpdateFileContents({
+        owner: repoUser[0],
+        repo: repoUser[1],
+        path: "package.json",
+        message: "bump version",
+        sha: pkg[i].sha,
+        committer: {
+          name: "devashar13",
+          email: "dev.ashar2019@vitstudent.ac.in",
+        },
+        content: objJsonB64,
+      });
+      console.log(update);
+    }
+  }
+};
 export default {
   makePR: async (token, options) => {
     const csvContents = await helpers.parseCSV(options);
@@ -16,22 +61,28 @@ export default {
       const repoUser = csvContents[i].repo
         .replace("https://github.com/", "")
         .split("/");
-    try{
+      try {
         const check_collab = await octokit.rest.repos.checkCollaborator({
-            owner: repoUser[0],
-            repo: repoUser[1],
-            username: userName,
-          });
-        if(check_collab.data.status == 204){
-            console.log("You are collaborator of this repository, we will create a bracnch");
-            await createBranch()
+          owner: repoUser[0],
+          repo: repoUser[1],
+          username: userName,
+        });
+        if (check_collab.status == 204) {
+          console.log(
+            "You are collaborator of this repository, we will create a branch"
+          );
+
+          await createBranch(token, options, repoUser);
         }
-    }catch(e){
-        if(e.status == 403){
-            console.log("You are not collaborator of this repository, we will fork and make a pr");
-            await createFork()
+      } catch (e) {
+        console.log(e);
+        if (e.status == 403) {
+          console.log(
+            "You are not collaborator of this repository, we will fork and make a pr"
+          );
+          await createFork();
         }
-    }
+      }
       //   const { data } = await octokit.repos.get({
       //     owner: "sahil-sharma",
       //     repo: repo,

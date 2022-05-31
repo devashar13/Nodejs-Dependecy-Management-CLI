@@ -31,7 +31,7 @@ export async function cli(args) {
   if(!token) {
     token = await github.getPersonalAccesToken();
   }
-  // const getDepends = await github.getContents(token,options);
-  // await helper.createTable(getDepends);
+  // const {libversions,data} = await github.getContents(token,options);
+  // await helper.createTable(libversions);
   const makePR = await githubActions.makePR(token,options);
 }
