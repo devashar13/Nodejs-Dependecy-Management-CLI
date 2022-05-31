@@ -1,12 +1,12 @@
 import arg from "arg";
 import github from "./utils/githubAuth";
 import helper from "./utils/helpers";
-import githubActions from './github';
+import githubActions from "./github";
 function parseArgumentsIntoOptions(rawArgs) {
   const args = arg(
     {
       "--input": String,
-      "-u":Boolean,
+      "-u": Boolean,
       "--help": Boolean,
       "-i": "--input",
       "-h": "--help",
@@ -25,13 +25,27 @@ function parseArgumentsIntoOptions(rawArgs) {
 
 export async function cli(args) {
   let options = parseArgumentsIntoOptions(args);
-  console.log(options);
   //   options = await prompForMissingOptions(options);
   let token = await github.getStoredGithubToken();
-  if(!token) {
+  if (!token) {
     token = await github.getPersonalAccesToken();
   }
-  // const {libversions,data} = await github.getContents(token,options);
-  // await helper.createTable(libversions);
-  const makePR = await githubActions.makePR(token,options);
+  if (!options.library) {
+    console.log("Please provide a library name");
+    return;
+  }
+  if (options.fileInput == "") {
+    console.log("Please provide a csv file containing the github repositories");
+    return;
+  }
+  const { libversions, data } = await github.getContents(token, options);
+
+  if (!options.update) {
+    await helper.createTable(libversions);
+    return;
+  }
+  if (options.update) {
+    await helper.createTable(libversions);
+    const makePR = await githubActions.makePR(token, options);
+  }
 }

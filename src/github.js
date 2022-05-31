@@ -13,27 +13,40 @@ const makeLibsArray = (libs) => {
   return stats;
 };
 
-const createBranch = async (token, options, repoUser, user) => {
-  // create a branch
-  // get the sha of the master branch
+const createPullRequest = async (
+  token,
+  options,
+  repoUser,
+  updateSha,
+  version
+) => {
   const octokit = new Octokit({
     auth: token,
   });
-  const masterRef = await octokit.rest.git.getRef({
+  const pullRequest = await octokit.rest.pulls.create({
     owner: repoUser[0],
     repo: repoUser[1],
-    ref: "heads/master",
+    title: `Bump ${options.library}`,
+    head: `bump-${options.library}`,
+    base: "master",
+    body: `Bump ${version} to ${options.library.split("@")[1]}`,
   });
+  console.log(
+    `Pull request created at:${pullRequest.data.url
+      .replace("api.", "")
+      .replace("/repos", "")
+      .replace("pulls", "pull")}`
+  );
+  // create table with updated version and url
+};
 
-  const branchRef = masterRef.data.object.sha;
-  // create new branch
-  const newRef = await octokit.rest.git.createRef({
-    owner: repoUser[0],
-    repo: repoUser[1],
-    ref: `refs/heads/bump-${options.library}`,
-    sha: branchRef,
+const createBranch = async (token, options, repoUser, user) => {
+  // create a branch
+  // get the sha of the master branch
+
+  const octokit = new Octokit({
+    auth: token,
   });
-  console.log("New Brach created🎉");
 
   //   commit change in package.json
   const { libversions, pkg } = await githubAuth.getContents(token, options);
@@ -41,6 +54,22 @@ const createBranch = async (token, options, repoUser, user) => {
 
   for (let i = 0; i < stats.length; i++) {
     if (stats[i][3] == "no") {
+      const masterRef = await octokit.rest.git.getRef({
+        owner: repoUser[0],
+        repo: repoUser[1],
+        ref: "heads/master",
+      });
+
+      const branchRef = masterRef.data.object.sha;
+      // create new branch
+      const newRef = await octokit.rest.git.createRef({
+        owner: repoUser[0],
+        repo: repoUser[1],
+        ref: `refs/heads/bump-${options.library}`,
+        sha: branchRef,
+      });
+      console.log("New Brach created🎉");
+      
       const data = pkg[i];
       data.dependencies[options.library.split("@")[0]] = `^${
         options.library.split("@")[1]
@@ -64,7 +93,12 @@ const createBranch = async (token, options, repoUser, user) => {
         },
         content: objJsonB64,
       });
+      //   get update sha
+      const updateSha = update.data.content.sha;
       console.log("Changes Created🎉");
+      createPullRequest(token, options, repoUser, updateSha, stats[i][2]);
+    }else{
+        continue;
     }
   }
 };
@@ -91,10 +125,6 @@ export default {
           username: userName,
         });
         if (check_collab.status == 204) {
-          console.log(
-            "You are collaborator of this repository, we will create a branch"
-          );
-
           await createBranch(token, options, repoUser, user);
         }
       } catch (e) {

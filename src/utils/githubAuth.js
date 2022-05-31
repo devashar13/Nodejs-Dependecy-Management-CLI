@@ -30,6 +30,22 @@ To create a token check :https://github.com/settings/tokens/new?scopes=repo`,
   return inquirer.prompt(questions);
 };
 
+const compareVersions = (version1, version2) => {
+  const v1 = version1.split(".");
+  const v2 = version2.split(".");
+  const greater = true
+  if(Number(v1[0].replace("^","")) > Number(v2[0].replace("^",""))){
+    return greater
+  }
+  if(Number(v1[0].replace("^","")) == Number(v2[0].replace("^","")) && Number(v1[1]) > Number(v2[1])){
+    return greater
+  }
+  if(Number(v1[0].replace("^","")) == Number(v2[0].replace("^","")) && Number(v1[1]) == Number(v2[1]) && Number(v1[2]) > Number(v2[2])){
+    return greater
+  }
+  return !greater
+}
+
 export default {
   getInstance: () => {
     return octokit;
@@ -68,7 +84,7 @@ export default {
       if (csvContents[i].name == "") {
         continue;
       }
-      console.log(csvContents[i].name);
+
       const repoUser = csvContents[i].repo
         .replace("https://github.com/", "")
         .split("/");
@@ -84,14 +100,12 @@ export default {
       // console.log(contents);
       const x = await axios.get(contents.data.download_url).then((response) => {
         const data = response.data;
+
         data.sha = contents.data.sha;
         pkg.push(data);
         const lib = options.library.split("@");
-        if (data.dependencies[lib[0]]) {
-          if (
-            parseFloat(lib[1]) <=
-            parseFloat(data.dependencies[lib[0]].replace("^", ""))
-          ) {
+        if (data.dependencies[lib[0]]) { 
+          if (compareVersions(data.dependencies[lib[0]], lib[1])) {
             libversions[csvContents[i].name] = [
               csvContents[i].repo,
               data.dependencies[lib[0]],
@@ -106,6 +120,7 @@ export default {
           }
         }
       });
+
     }
     return { libversions, pkg };
   },
@@ -128,7 +143,7 @@ export default {
           path: "package.json",
         }
       );
-      // console.log(contents);
+
       const x = await axios.get(contents.data.download_url).then((response) => {
         data = response.data;
         pkg.push(data);

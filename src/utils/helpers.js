@@ -39,7 +39,6 @@ createTable:(repoStats) => {
   for (let i = 0; i < x.length; i++) {
     stats.push([x[i],...repoStats[x[i]]])
   }
-  console.log(stats)
    const table = new Table({
      head: ['name','repo',"version","version_satisfied"],
      colWidths: [300, 20, 10,30]
