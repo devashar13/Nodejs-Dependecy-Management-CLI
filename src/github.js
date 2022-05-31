@@ -4,6 +4,7 @@ import githubAuth from "./utils/githubAuth";
 import { fs, vol } from "memfs";
 var filesys = require("fs");
 
+const links = []    
 const makeLibsArray = (libs) => {
   const stats = [];
   const x = Object.keys(libs);
@@ -20,6 +21,7 @@ const createPullRequest = async (
   updateSha,
   version
 ) => {
+
   const octokit = new Octokit({
     auth: token,
   });
@@ -37,10 +39,17 @@ const createPullRequest = async (
       .replace("/repos", "")
       .replace("pulls", "pull")}`
   );
+  links.push(
+    pullRequest.data.url
+      .replace("api.", "")
+      .replace("/repos", "")
+      .replace("pulls", "pull")
+  );
+  
   // create table with updated version and url
 };
 
-const createBranch = async (token, options, repoUser, user) => {
+const createBranch = async (token, options, user, csvContents) => {
   // create a branch
   // get the sha of the master branch
 
@@ -51,8 +60,10 @@ const createBranch = async (token, options, repoUser, user) => {
   //   commit change in package.json
   const { libversions, pkg } = await githubAuth.getContents(token, options);
   const stats = makeLibsArray(libversions);
-
   for (let i = 0; i < stats.length; i++) {
+    const repoUser = csvContents[i].repo
+      .replace("https://github.com/", "")
+      .split("/");
     if (stats[i][3] == "no") {
       const masterRef = await octokit.rest.git.getRef({
         owner: repoUser[0],
@@ -69,14 +80,16 @@ const createBranch = async (token, options, repoUser, user) => {
         sha: branchRef,
       });
       console.log("New Brach created🎉");
-      
+
       const data = pkg[i];
       data.dependencies[options.library.split("@")[0]] = `^${
         options.library.split("@")[1]
       }`;
+
       const sha = pkg[i].sha;
       //   delete sha
       delete data.sha;
+
       let objJsonStr = JSON.stringify(data);
       let objJsonB64 = Buffer.from(objJsonStr).toString("base64");
 
@@ -97,8 +110,8 @@ const createBranch = async (token, options, repoUser, user) => {
       const updateSha = update.data.content.sha;
       console.log("Changes Created🎉");
       createPullRequest(token, options, repoUser, updateSha, stats[i][2]);
-    }else{
-        continue;
+    } else {
+      continue;
     }
   }
 };
@@ -110,31 +123,31 @@ export default {
     });
     const user = await octokit.rest.users.getAuthenticated();
     const userName = user.data.login;
+    await createBranch(token, options, user, csvContents);
 
-    for (let i = 0; i < csvContents.length; i++) {
-      if (csvContents[i].name == "") {
-        continue;
-      }
-      const repoUser = csvContents[i].repo
-        .replace("https://github.com/", "")
-        .split("/");
-      try {
-        const check_collab = await octokit.rest.repos.checkCollaborator({
-          owner: repoUser[0],
-          repo: repoUser[1],
-          username: userName,
-        });
-        if (check_collab.status == 204) {
-          await createBranch(token, options, repoUser, user);
-        }
-      } catch (e) {
-        if (e.status == 403) {
-          console.log(
-            "You are not collaborator of this repository, we will fork and make a pr"
-          );
-          await createFork();
-        }
-      }
-    }
+    // for (let i = 0; i < csvContents.length; i++) {
+    //   if (csvContents[i].name == "") {
+    //     continue;
+    //   }
+    //   const repoUser = csvContents[i].repo
+    //     .replace("https://github.com/", "")
+    //     .split("/");
+    //   try {
+    //     const check_collab = await octokit.rest.repos.checkCollaborator({
+    //       owner: repoUser[0],
+    //       repo: repoUser[1],
+    //       username: userName,
+    //     });
+    //     if (check_collab.status == 204) {
+    //     }
+    //   } catch (e) {
+    //     if (e.status == 403) {
+    //       console.log(
+    //         "You are not collaborator of this repository, we will fork and make a pr"
+    //       );
+    //       await createFork();
+    //     }
+    //   }
+    // }
   },
 };
