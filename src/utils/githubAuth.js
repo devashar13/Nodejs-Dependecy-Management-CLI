@@ -117,7 +117,6 @@ export default {
       if (csvContents[i].name == "") {
         continue;
       }
-      console.log(csvContents[i].name);
       const repoUser = csvContents[i].repo
         .replace("https://github.com/", "")
         .split("/");

@@ -13,54 +13,58 @@ const makeLibsArray = (libs) => {
   return stats;
 };
 
-const createBranch = async (token, options, repoUser,user) => {
+const createBranch = async (token, options, repoUser, user) => {
   // create a branch
-    // get the sha of the master branch
-    console.log(user.data)
-    const octokit = new Octokit({
-      auth: token,
-    });
-    const masterRef = await octokit.rest.git.getRef({
-        owner: repoUser[0],
-        repo: repoUser[1],
-        ref: "heads/master",
-      });
+  // get the sha of the master branch
+  const octokit = new Octokit({
+    auth: token,
+  });
+  const masterRef = await octokit.rest.git.getRef({
+    owner: repoUser[0],
+    repo: repoUser[1],
+    ref: "heads/master",
+  });
 
-    const branchRef= masterRef.data.object.sha;
-    // create new branch
-    const newRef = await octokit.rest.git.createRef({
-        owner: repoUser[0],
-        repo: repoUser[1],
-        ref: `refs/heads/bump-${options.library}`,
-        sha: branchRef,
-      });
-    console.log(newRef);
-    
+  const branchRef = masterRef.data.object.sha;
+  // create new branch
+  const newRef = await octokit.rest.git.createRef({
+    owner: repoUser[0],
+    repo: repoUser[1],
+    ref: `refs/heads/bump-${options.library}`,
+    sha: branchRef,
+  });
+  console.log("New Brach created🎉");
 
-//   commit change in package.json
+  //   commit change in package.json
   const { libversions, pkg } = await githubAuth.getContents(token, options);
   const stats = makeLibsArray(libversions);
-  const lib = options.library.split("@");
 
   for (let i = 0; i < stats.length; i++) {
     if (stats[i][3] == "no") {
-      let objJsonStr = JSON.stringify(pkg[i]);
-      console.log(objJsonStr);
+      const data = pkg[i];
+      data.dependencies[options.library.split("@")[0]] = `^${
+        options.library.split("@")[1]
+      }`;
+      const sha = pkg[i].sha;
+      //   delete sha
+      delete data.sha;
+      let objJsonStr = JSON.stringify(data);
       let objJsonB64 = Buffer.from(objJsonStr).toString("base64");
-      console.log(pkg[i].sha);
+
       const update = await octokit.rest.repos.createOrUpdateFileContents({
         owner: repoUser[0],
         repo: repoUser[1],
         path: "package.json",
         message: "bump version",
-        sha: pkg[i].sha,
+        branch: `bump-${options.library}`,
+        sha: sha,
         committer: {
           name: user.data.login,
           email: "dev.ashar2019@vitstudent.ac.in",
         },
         content: objJsonB64,
       });
-      console.log(update);
+      console.log("Changes Created🎉");
     }
   }
 };
@@ -91,10 +95,9 @@ export default {
             "You are collaborator of this repository, we will create a branch"
           );
 
-          await createBranch(token, options, repoUser,user);
+          await createBranch(token, options, repoUser, user);
         }
       } catch (e) {
-        console.log(e);
         if (e.status == 403) {
           console.log(
             "You are not collaborator of this repository, we will fork and make a pr"
@@ -102,42 +105,6 @@ export default {
           await createFork();
         }
       }
-      //   const { data } = await octokit.repos.get({
-      //     owner: "sahil-sharma",
-      //     repo: repo,
-      //   });
-      //   const { owner, name } = data;
-      //   const { data: branch } = await octokit.repos.getBranch({
-      //     owner: owner.login,
-      //     repo: name,
-      //     branch: branchName,
-      //   });
-      //   const { commit } = branch;
-      //   const { sha } = commit;
-      //   const { data: pr } = await octokit.pulls.create({
-      //     owner: owner.login,
-      //     repo: name,
-      //     head: branchName,
-      //     base: "master",
-      //     title: "Update dependencies",
-      //     body: "This PR is created by sahil-sharma",
-      //   });
-      //   const { number } = pr;
-      //   const { data: prCommit } = await octokit.pulls.listCommits({
-      //     owner: owner.login,
-      //     repo: name,
-      //     pull_number: number,
-      //   });
-      //   const { sha: prSha } = prCommit[0];
-      //   const { data: status } = await octokit.repos.createStatus({
-      //     owner: owner.login,
-      //     repo: name,
-      //     sha: prSha,
-      //     state: "success",
-      //     description: "All good",
-      //     context: "update-dependencies",
-      //   });
-      //   return status;
     }
   },
 };
