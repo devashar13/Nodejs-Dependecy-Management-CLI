@@ -13,12 +13,31 @@ const makeLibsArray = (libs) => {
   return stats;
 };
 
-const createBranch = async (token, options, repoUser) => {
+const createBranch = async (token, options, repoUser,user) => {
   // create a branch
-  // commit change in package.json
-  const octokit = new Octokit({
-    auth: token,
-  });
+    // get the sha of the master branch
+    console.log(user.data)
+    const octokit = new Octokit({
+      auth: token,
+    });
+    const masterRef = await octokit.rest.git.getRef({
+        owner: repoUser[0],
+        repo: repoUser[1],
+        ref: "heads/master",
+      });
+
+    const branchRef= masterRef.data.object.sha;
+    // create new branch
+    const newRef = await octokit.rest.git.createRef({
+        owner: repoUser[0],
+        repo: repoUser[1],
+        ref: `refs/heads/bump-${options.library}`,
+        sha: branchRef,
+      });
+    console.log(newRef);
+    
+
+//   commit change in package.json
   const { libversions, pkg } = await githubAuth.getContents(token, options);
   const stats = makeLibsArray(libversions);
   const lib = options.library.split("@");
@@ -36,7 +55,7 @@ const createBranch = async (token, options, repoUser) => {
         message: "bump version",
         sha: pkg[i].sha,
         committer: {
-          name: "devashar13",
+          name: user.data.login,
           email: "dev.ashar2019@vitstudent.ac.in",
         },
         content: objJsonB64,
@@ -72,7 +91,7 @@ export default {
             "You are collaborator of this repository, we will create a branch"
           );
 
-          await createBranch(token, options, repoUser);
+          await createBranch(token, options, repoUser,user);
         }
       } catch (e) {
         console.log(e);
