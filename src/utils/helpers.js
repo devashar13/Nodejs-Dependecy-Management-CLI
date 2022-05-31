@@ -55,20 +55,24 @@ export default {
       stats.push([x[i], ...repoStats[x[i]]]);
     }
     // add makepr to stats
+    let y = 0;
     for (let i = 0; i < stats.length; i++) {
       if (stats[i][3] == "no") {
-        stats[i].push(makePR[i]);
+        stats[i].push(makePR[y]);
+        y++;
       } else {
+        stats[i].push("");
       }
-      const table = new Table({
-        head: ["name", "repo", "version", "version_satisfied", "pr_link"],
-        colWidths: [50, 70, 10, 10, 70],
-      });
-      stats.forEach((repo) => {
-        table.push(repo);
-      });
-
-      console.log(table.toString());
     }
+    console.log(stats);
+    const table = new Table({
+      head: ["name", "repo", "version", "version_satisfied", "pr_link"],
+      colWidths: [50, 70, 10, 10, 70],
+    });
+    stats.forEach((repo) => {
+      table.push(repo);
+    });
+
+    console.log(table.toString());
   },
 };
