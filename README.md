@@ -30,7 +30,7 @@
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <a href="https://github.com/github_username/repo_name">
+  <a href="dyte-submissions/dyte-vit-2022-devashar13">
     <img src="https://i.postimg.cc/XJXTMMXZ/image.png" alt="Logo">
   </a>
 
@@ -81,7 +81,7 @@ A tool to manage all your dependencies.
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 <p align="center">
-  
+  <img src="https://i.postimg.cc/yx8WC8cm/biryanihelp.png" alt="Logo">
 </p>
 
 **Biryani** is a tool created to manage dependecies of your github repositories without locally installing any of them . Given the current version of a dependency with a csv of repositories, biryani tell if the version is greater than or equal to the version specified or not and update it and create a pull request. 
