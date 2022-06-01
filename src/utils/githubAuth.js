@@ -30,6 +30,14 @@ const compareVersions = (version1, version2) => {
   const v1 = version1.split(".");
   const v2 = version2.split(".");
   const greater = true;
+  // if all values are equal
+  if (
+    Number(v1[0].replace("^", "")) == Number(v2[0].replace("^", "")) &&
+    Number(v1[1]) == Number(v2[1]) &&
+    Number(v1[2]) == Number(v2[2])
+  ){
+    return true;
+  }
   if (Number(v1[0].replace("^", "")) > Number(v2[0].replace("^", ""))) {
     return greater;
   }
