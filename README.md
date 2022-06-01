@@ -113,51 +113,56 @@ This is an example of how to list things you need to use the software and how to
   ```sh
   npm install npm@latest -g
   ```
+* Github private access token
+  Create a personal access token from : https://github.com/settings/tokens/new?scopes=repo,user
+  (will be only asked )
 
 ### Installation
-
-1. Get a free API Key at [https://example.com](https://example.com)
-2. Clone the repo
-   ```sh
-   git clone https://github.com/github_username/repo_name.git
-   ```
-3. Install NPM packages
-   ```sh
-   npm install
-   ```
-4. Enter your API in `config.js`
-   ```js
-   const API_KEY = 'ENTER YOUR API';
-   ```
-
-<p align="right">(<a href="#top">back to top</a>)</p>
-
-
-
+ 1. Install NPM packages
+```sh
+npm install -g biryani
+```
+And biryani will be installed globally to your system path.
 <!-- USAGE EXAMPLES -->
+
 ## Usage
 
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
+To check if installation was successful, use the command: 
 
-_For more examples, please refer to the [Documentation](https://example.com)_
+```
+biryani
+```
+After installation, run the command below in your terminal:
+
+```
+biryani --help 
+```
+The help menu with all the options will be listed. 
+
+
+```
+biryani -i <path-to-csv> <library@version>
+```
+Use the above command to get current version of the library being used in the repositories and check if the version is satisfied with the given version
+
+Sample Output:
+[![image.png](https://i.postimg.cc/Dwcn2gZh/image.png)](https://postimg.cc/rDzvj5xZ)
+
+```
+biryani -u -i <path-to-csv> <library@version>
+```
+Use the above command to get current version of the library being used in the repositories and check if the version is satisfied with the given version and update the version and create a pull request
+
 
 <p align="right">(<a href="#top">back to top</a>)</p>
-
 
 
 <!-- ROADMAP -->
 ## Roadmap
 
-- [ ] Feature 1
-- [ ] Feature 2
-- [ ] Feature 3
-    - [ ] Nested Feature
-
-See the [open issues](https://github.com/github_username/repo_name/issues) for a full list of proposed features (and known issues).
+See the [open issues](https://github.com/-submissions/dyte-vit-2022-devashar13/issues) for a full list of proposed features (and known issues).
 
 <p align="right">(<a href="#top">back to top</a>)</p>
-
-
 
 <!-- CONTRIBUTING -->
 ## Contributing
@@ -188,10 +193,7 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 
 <!-- CONTACT -->
 ## Contact
-
-Your Name - [@twitter_handle](https://twitter.com/twitter_handle) - email@email_client.com
-
-Project Link: [https://github.com/github_username/repo_name](https://github.com/github_username/repo_name)
+Project Link: [https://github.com/dyte-submissions/dyte-vit-2022-devashar13](https://github.com/github_username/repo_name)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
