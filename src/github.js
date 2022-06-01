@@ -19,7 +19,8 @@ const createPullRequest = async (
   options,
   repoUser,
   updateSha,
-  version
+  version,
+  branchName
 ) => {
   const octokit = new Octokit({
     auth: token,
@@ -27,8 +28,8 @@ const createPullRequest = async (
   const pullRequest = await octokit.rest.pulls.create({
     owner: repoUser[0],
     repo: repoUser[1],
-    title: `Bump ${options.library}`,
-    head: `bump-${options.library}`,
+    title: `Bump ${version} to ${options.library.split("@")[1]}`,
+    head: branchName,
     base: "master",
     body: `Bump ${version} to ${options.library.split("@")[1]}`,
   });
@@ -78,13 +79,18 @@ const createBranch = async (token, options, user, csvContents) => {
 
       const branchRef = masterRef.data.object.sha;
       // create new branch
+      //   add random number in the end
+      const branchName = `bump-${options.library}-${Math.floor(
+        Math.random() * 1000
+      )}`;
+
       const newRef = await octokit.rest.git.createRef({
         owner: repoUser[0],
         repo: repoUser[1],
-        ref: `refs/heads/bump-${options.library}`,
+        ref: "refs/heads/"+branchName,
         sha: branchRef,
       });
-      console.log("New Brach created🎉");
+      console.log("New Branch created🎉");
 
       const data = pkg[i];
       data.dependencies[options.library.split("@")[0]] = `^${
@@ -124,19 +130,22 @@ const createBranch = async (token, options, user, csvContents) => {
         repo: repoUser[1],
         path: "package.json",
         message: "bump version",
-        branch: `bump-${options.library}`,
+        branch: branchName,
         sha: sha,
-        committer: {
-          name: user.data.login,
-          email: useEmail,
-        },
 
         content: objJsonB64,
       });
       //   get update sha
       const updateSha = update.data.content.sha;
       console.log("Changes Created🎉");
-      await createPullRequest(token, options, repoUser, updateSha, stats[i][2]);
+      await createPullRequest(
+        token,
+        options,
+        repoUser,
+        updateSha,
+        stats[i][2],
+        branchName
+      );
     } else {
       continue;
     }
