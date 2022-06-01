@@ -31,7 +31,7 @@
 <br />
 <div align="center">
   <a href="https://github.com/github_username/repo_name">
-    <img src="images/biryanilogo.png" alt="Logo">
+    <img src="https://i.postimg.cc/XJXTMMXZ/image.png" alt="Logo">
   </a>
 
 <h3 align="center">Biryani CLI</h3>
@@ -81,7 +81,7 @@ A tool to manage all your dependencies.
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 <p align="center">
-[![image.png](https://i.postimg.cc/XJXTMMXZ/image.png)](https://postimg.cc/wy8WJGXH)
+  
 </p>
 
 **Biryani** is a tool created to manage dependecies of your github repositories without locally installing any of them . Given the current version of a dependency with a csv of repositories, biryani tell if the version is greater than or equal to the version specified or not and update it and create a pull request. 
