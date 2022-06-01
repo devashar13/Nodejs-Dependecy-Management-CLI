@@ -31,22 +31,22 @@
 <br />
 <div align="center">
   <a href="https://github.com/github_username/repo_name">
-    <img src="images/biryanilogo.png" alt="Logo" width="80" height="80">
+    <img src="images/biryanilogo.png" alt="Logo">
   </a>
 
-<h3 align="center">project_title</h3>
+<h3 align="center">Biryani CLI</h3>
 
   <p align="center">
-    project_description
+A tool to manage all your dependencies. 
     <br />
-    <a href="https://github.com/github_username/repo_name"><strong>Explore the docs »</strong></a>
+    <a href="https://github.com/dyte-submissions/dyte-vit-2022-devashar13"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/github_username/repo_name">View Demo</a>
+    <a href="https://github.com/dyte-submissions/dyte-vit-2022-devashar13">View Demo</a>
     ·
-    <a href="https://github.com/github_username/repo_name/issues">Report Bug</a>
+    <a href="https://github.com/dyte-submissions/dyte-vit-2022-devashar13/issues">Report Bug</a>
     ·
-    <a href="https://github.com/github_username/repo_name/issues">Request Feature</a>
+    <a href="https://github.com/dyte-submissions/dyte-vit-2022-devashar13/issues">Request Feature</a>
   </p>
 </div>
 
@@ -78,32 +78,26 @@
   </ol>
 </details>
 
-
-
 <!-- ABOUT THE PROJECT -->
 ## About The Project
+<p align="center">
+<img src="images/biryanihelp.png" alt="" border="0"></a>
+</p>
 
-[![Product Name Screen Shot][product-screenshot]](https://example.com)
-
-Here's a blank template to get started: To avoid retyping too much info. Do a search and replace with your text editor for the following: `github_username`, `repo_name`, `twitter_handle`, `linkedin_username`, `email_client`, `email`, `project_title`, `project_description`
-
-<p align="right">(<a href="#top">back to top</a>)</p>
-
-
+**Biryani** is a tool created to manage dependecies of your github repositories without locally installing any of them . Given the current version of a dependency with a csv of repositories, biryani tell if the version is greater than or equal to the version specified or not and update it and create a pull request. 
 
 ### Built With
 
-* [Next.js](https://nextjs.org/)
-* [React.js](https://reactjs.org/)
-* [Vue.js](https://vuejs.org/)
-* [Angular](https://angular.io/)
-* [Svelte](https://svelte.dev/)
-* [Laravel](https://laravel.com)
-* [Bootstrap](https://getbootstrap.com)
-* [JQuery](https://jquery.com)
+* [arg](https://www.npmjs.com/package/arg)
+* [octokit](https://www.npmjs.com/package/octokit/)
+* [chalk](https://www.npmjs.com/package/chalk)
+* [cli-table](https://www.npmjs.com/package/cli-table)
+* [configstore](https://svelte.dev/)
+* [configstore](https://www.npmjs.com/package/configstore)
+* [esm](https://www.npmjs.com/package/esm)
+* [inquirer](https://www.npmjs.com/package/inquirer)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
-
 
 
 <!-- GETTING STARTED -->
