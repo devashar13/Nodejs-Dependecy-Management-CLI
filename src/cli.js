@@ -78,5 +78,5 @@ async function cli(args) {
 }
 
 module.exports = {
-  
+  cli
 }
