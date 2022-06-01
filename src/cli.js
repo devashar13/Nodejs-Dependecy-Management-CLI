@@ -3,7 +3,6 @@ import github from "./utils/githubAuth";
 import helper from "./utils/helpers";
 import githubActions from "./github";
 import chalk from "chalk";
-import boxen from 'boxen';
 import figlet from "figlet";
 function parseArgumentsIntoOptions(rawArgs) {
   const args = arg(

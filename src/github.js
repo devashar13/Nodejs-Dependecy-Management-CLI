@@ -1,8 +1,6 @@
 const { Octokit } = require("@octokit/rest");
 import helpers from "./utils/helpers";
 import githubAuth from "./utils/githubAuth";
-import { fs, vol } from "memfs";
-var filesys = require("fs");
 import inquirer from "inquirer";
 
 const links = [];

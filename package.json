@@ -38,6 +38,7 @@
     "cli-table": "^0.3.11",
     "clui": "^0.3.6",
     "configstore": "^3.1.5",
+    "esm": "^3.2.25",
     "figlet": "^1.5.2",
     "inquirer": "^8.2.4",
     "lodash": "^4.17.21",
