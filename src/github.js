@@ -20,7 +20,8 @@ const createPullRequest = async (
   repoUser,
   updateSha,
   version,
-  branchName
+  branchName,
+  defaultBranch
 ) => {
   const octokit = new Octokit({
     auth: token,
@@ -30,7 +31,7 @@ const createPullRequest = async (
     repo: repoUser[1],
     title: `Bump ${version} to ${options.library.split("@")[1]}`,
     head: branchName,
-    base: "master",
+    base: defaultBranch,
     body: `Bump ${version} to ${options.library.split("@")[1]}`,
   });
   console.log(
@@ -144,7 +145,8 @@ const createBranch = async (token, options, user, csvContents) => {
         repoUser,
         updateSha,
         stats[i][2],
-        branchName
+        branchName,
+        defaultBranch
       );
     } else {
       continue;
