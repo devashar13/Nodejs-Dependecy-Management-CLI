@@ -120,7 +120,7 @@ This is an example of how to list things you need to use the software and how to
 ### Installation
  1. Install NPM packages
 ```sh
-npm install -g biryani
+npm install -g @devashar13/biryani
 ```
 And biryani will be installed globally to your system path.
 <!-- USAGE EXAMPLES -->
