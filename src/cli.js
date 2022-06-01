@@ -1,9 +1,11 @@
-import arg from "arg";
-import github from "./utils/githubAuth";
-import helper from "./utils/helpers";
-import githubActions from "./github";
-import chalk from "chalk";
-import figlet from "figlet";
+
+const arg = require("arg");
+const github  = require("./utils/githubAuth");
+const helper = require("./utils/helpers");
+const githubActions = require("./github")
+const chalk = require("chalk");
+const figlet = require("figlet");
+
 function parseArgumentsIntoOptions(rawArgs) {
   const args = arg(
     {
@@ -26,7 +28,7 @@ function parseArgumentsIntoOptions(rawArgs) {
   };
 }
 
-export async function cli(args) {
+async function cli(args) {
   let options = parseArgumentsIntoOptions(args);
   console.log(
     chalk.yellow(figlet.textSync("Biryani", { horizontalLayout: "full" }))
@@ -73,4 +75,8 @@ export async function cli(args) {
     const makePR = await githubActions.makePR(token, options);
     await helper.createUpdateTable(libversions, makePR);
   }
+}
+
+module.exports = {
+  
 }

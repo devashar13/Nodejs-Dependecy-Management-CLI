@@ -1,11 +1,10 @@
-import fs from "fs";
-
-import path from "path";
-import { promisify } from "util";
+const fs = require("fs");
+const path = require("path");
+const {promisify} = require("util");
 var Table = require("cli-table");
 
 const access = promisify(fs.access);
-export default {
+module.exports = {
   getCurrentDirectoryBase: () => {
     return path.basename(process.cwd());
   },

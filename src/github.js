@@ -1,7 +1,7 @@
 const { Octokit } = require("@octokit/rest");
-import helpers from "./utils/helpers";
-import githubAuth from "./utils/githubAuth";
-import inquirer from "inquirer";
+const helpers = require("./utils/helpers");
+const inquirer = require("inquirer");
+const githubAuth = require("./utils/githubAuth");
 
 const links = [];
 let useEmail = "";
@@ -137,7 +137,7 @@ const createBranch = async (token, options, user, csvContents) => {
   }
   return;
 };
-export default {
+module.exports = {
   makePR: async (token, options) => {
     const csvContents = await helpers.parseCSV(options);
     const octokit = new Octokit({

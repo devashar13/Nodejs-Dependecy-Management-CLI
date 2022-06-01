@@ -1,8 +1,8 @@
-import Configstore from "configstore";
+const Configstore = require("configstore");
 const { Octokit } = require("@octokit/core");
-import axios from "axios";
-import inquirer from "inquirer";
-import helper from "./helpers";
+const axios = require("axios");
+const inquirer = require("inquirer");
+const helper = require("./helpers");
 const pkg = require("../../package.json");
 const conf = new Configstore(pkg.name);
 let auth;
@@ -13,7 +13,7 @@ const askGithubCredentials = async () => {
       name: "personalAuthToken",
       type: "input",
       message: `Enter your github personal access token:
-To create a token check :https://github.com/settings/tokens/new?scopes=repo`,
+To create a token check :https://github.com/settings/tokens/new?scopes=repo,user`,
       validate: function (value) {
         if (value.length) {
           return true;
@@ -29,32 +29,36 @@ To create a token check :https://github.com/settings/tokens/new?scopes=repo`,
 const compareVersions = (version1, version2) => {
   const v1 = version1.split(".");
   const v2 = version2.split(".");
-  const greater = true
-  if(Number(v1[0].replace("^","")) > Number(v2[0].replace("^",""))){
-    return greater
+  const greater = true;
+  if (Number(v1[0].replace("^", "")) > Number(v2[0].replace("^", ""))) {
+    return greater;
   }
-  if(Number(v1[0].replace("^","")) == Number(v2[0].replace("^","")) && Number(v1[1]) > Number(v2[1])){
-    return greater
+  if (
+    Number(v1[0].replace("^", "")) == Number(v2[0].replace("^", "")) &&
+    Number(v1[1]) > Number(v2[1])
+  ) {
+    return greater;
   }
-  if(Number(v1[0].replace("^","")) == Number(v2[0].replace("^","")) && Number(v1[1]) == Number(v2[1]) && Number(v1[2]) > Number(v2[2])){
-    return greater
+  if (
+    Number(v1[0].replace("^", "")) == Number(v2[0].replace("^", "")) &&
+    Number(v1[1]) == Number(v2[1]) &&
+    Number(v1[2]) > Number(v2[2])
+  ) {
+    return greater;
   }
-  return !greater
-}
+  return !greater;
+};
 
-export default {
+module.exports = {
+  getStoredGithubToken: async () => {
+    return conf.get("github.token");
+  },
   getInstance: () => {
     return octokit;
   },
 
-  getStoredGithubToken: async () => {
-    return conf.get("github.token");
-  },
-
   getPersonalAccesToken: async () => {
     const credentials = await askGithubCredentials();
-
-
 
     try {
       auth = new Octokit({ auth: credentials.personalAuthToken });
@@ -72,7 +76,7 @@ export default {
   //   return repo;
   // },
   getContents: async (token, options) => {
-    const pkg = []
+    const pkg = [];
     auth = new Octokit({ auth: token });
     const csvContents = await helper.parseCSV(options);
     for (let i = 0; i < csvContents.length; i++) {
@@ -99,7 +103,7 @@ export default {
         data.sha = contents.data.sha;
         pkg.push(data);
         const lib = options.library.split("@");
-        if (data.dependencies[lib[0]]) { 
+        if (data.dependencies[lib[0]]) {
           if (compareVersions(data.dependencies[lib[0]], lib[1])) {
             libversions[csvContents[i].name] = [
               csvContents[i].repo,
@@ -115,7 +119,6 @@ export default {
           }
         }
       });
-
     }
     return { libversions, pkg };
   },
@@ -144,6 +147,6 @@ export default {
         pkg.push(data);
       });
     }
-    return pkg ;
+    return pkg;
   },
 };
