@@ -63,11 +63,17 @@ const createBranch = async (token, options, user, csvContents) => {
     const repoUser = csvContents[i].repo
       .replace("https://github.com/", "")
       .split("/");
+
+    const repoDetails = await octokit.repos.get({
+      owner: repoUser[0],
+      repo: repoUser[1],
+    });
+    const defaultBranch = repoDetails.data.default_branch;
     if (stats[i][3] == "no") {
       const masterRef = await octokit.rest.git.getRef({
         owner: repoUser[0],
         repo: repoUser[1],
-        ref: "heads/master",
+        ref: `heads/${defaultBranch}`,
       });
 
       const branchRef = masterRef.data.object.sha;
@@ -108,8 +114,8 @@ const createBranch = async (token, options, user, csvContents) => {
             },
           ]);
           useEmail = useEmail.email;
-        }else{
-            useEmail = email.data[0].email;
+        } else {
+          useEmail = email.data[0].email;
         }
       }
       console.log(useEmail);
