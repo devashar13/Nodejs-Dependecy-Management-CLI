@@ -1,7 +1,7 @@
 const fs = require("fs");
 const path = require("path");
 const {promisify} = require("util");
-var Table = require("cli-table");
+var Table = require("cli-table3");
 
 const access = promisify(fs.access);
 module.exports = {
@@ -38,7 +38,6 @@ module.exports = {
     }
     const table = new Table({
       head: ["name", "repo", "version", "version_satisfied"],
-      colWidths: [300, 20, 10, 30],
     });
     stats.forEach((repo) => {
       table.push(repo);
@@ -65,7 +64,6 @@ module.exports = {
 
     const table = new Table({
       head: ["name", "repo", "version", "version_satisfied", "pr_link"],
-      colWidths: [50, 70, 10, 10, 70],
     });
     stats.forEach((repo) => {
       table.push(repo);
