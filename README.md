@@ -137,6 +137,13 @@ After installation, run the command below in your terminal:
 ```
 biryani --help 
 ```
+Create a .csv file with the format 
+ ```
+ name,repo
+ reponame,https://github.com/username/reponame
+ ```
+ Check <a href="https://github.com/dyte-submissions/dyte-vit-2022-devashar13/blob/main/input.csv">Sample CSV</a>
+
 The help menu with all the options will be listed. 
 
 
