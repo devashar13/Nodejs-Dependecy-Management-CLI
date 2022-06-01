@@ -28,21 +28,15 @@
   },
   "homepage": "https://github.com/dyte-submissions/dyte-vit-2022-devashar13#readme",
   "dependencies": {
-    "@octokit/auth-basic": "^1.4.8",
     "@octokit/core": "^3.6.0",
     "@octokit/rest": "^18.12.0",
     "arg": "^5.0.1",
     "axios": "^0.27.2",
-    "boxen": "^4.2.0",
     "chalk": "^5.0.0",
     "cli-table": "^0.3.11",
-    "clui": "^0.3.6",
     "configstore": "^3.1.5",
     "esm": "^3.2.25",
     "figlet": "^1.5.2",
-    "inquirer": "^8.2.4",
-    "lodash": "^4.17.21",
-    "memfs": "^3.4.4",
-    "ncp": "^2.0.0"
+    "inquirer": "^8.2.4"
   }
 }

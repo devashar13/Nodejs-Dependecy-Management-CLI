@@ -1,11 +1,10 @@
 import fs from "fs";
-import ncp from "ncp";
+
 import path from "path";
 import { promisify } from "util";
 var Table = require("cli-table");
 
 const access = promisify(fs.access);
-const copy = promisify(ncp);
 export default {
   getCurrentDirectoryBase: () => {
     return path.basename(process.cwd());

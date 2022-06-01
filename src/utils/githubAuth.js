@@ -1,8 +1,6 @@
-import CLI from "clui";
 import Configstore from "configstore";
 const { Octokit } = require("@octokit/core");
 import axios from "axios";
-const Spinner = CLI.Spinner;
 import inquirer from "inquirer";
 import helper from "./helpers";
 const pkg = require("../../package.json");
@@ -55,15 +53,14 @@ export default {
 
   getPersonalAccesToken: async () => {
     const credentials = await askGithubCredentials();
-    const status = new Spinner("Authenticating you, please wait...");
 
-    status.start();
+
+
     try {
       auth = new Octokit({ auth: credentials.personalAuthToken });
       conf.set("github.token", credentials.personalAuthToken);
       return credentials.personalAuthToken;
     } finally {
-      status.stop();
     }
   },
   // getRepository: async (token) => {
