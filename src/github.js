@@ -29,7 +29,7 @@ const createPullRequest = async (
   const pullRequest = await octokit.rest.pulls.create({
     owner: repoUser[0],
     repo: repoUser[1],
-    title: `Bump ${version} to ${options.library.split("@")[1]}`,
+    title: `Bump ${options.library.split("@")[0]}${version} to ${options.library.split("@")[1]}`,
     head: branchName,
     base: defaultBranch,
     body: `Bump ${version} to ${options.library.split("@")[1]}`,
