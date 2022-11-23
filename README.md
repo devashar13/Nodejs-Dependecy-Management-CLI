@@ -58,7 +58,7 @@ A tool to manage all your dependencies.
   <img src="https://i.postimg.cc/yx8WC8cm/biryanihelp.png" alt="Logo">
 </p>
 
-**Biryani** is a tool created to manage dependecies of your github repositories without locally installing any of them . Given the current version of a dependency with a csv of repositories, biryani tell if the version is greater than or equal to the version specified or not and update it and create a pull request. 
+**Biryani** is a tool created to manage dependecies of your github repositories without locally installing any of them . Given the current version of a dependency with a csv of repositories, biryani can tell if the version is greater than or equal to the version specified or not and update it and create a pull request. 
 
 ### Built With
 
